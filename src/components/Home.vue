@@ -1,10 +1,11 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { useCounterStore } from "../Store/counter";
+const counter = useCounterStore();
 const product_list = ref(null);
 const cat_name = ref(null);
 const showModal = ref(false);
 const AddModal = ref(false);
-
 const selectedProduct = ref({});
 const newProduct = ref({
   title: "",
@@ -15,7 +16,6 @@ const newProduct = ref({
 // const showModal = ref(false)
 
 selectedProduct;
-
 onMounted(() => {
   fetch("https://fakestoreapi.com/products/")
     .then((res) => res.json())
@@ -41,8 +41,8 @@ function getFilterResult(category) {
     .catch((err) => console.error("Error:", err));
 }
 function openEditModal(product) {
-  selectedProduct.value = { ...product };
-  showModal.value = true;
+  counter.addData(product);
+
 }
 
 async function saveProductEdits() {
@@ -58,6 +58,7 @@ async function saveProductEdits() {
           title: selectedProduct.value.title,
           price: selectedProduct.value.price,
           category: selectedProduct.value.category,
+          image: selectedProduct.value.image,
         }),
       }
     );
@@ -145,12 +146,15 @@ async function saveNewProduct(newProducts) {
         </div>
 
         <div class="button_div">
-          <button
-            @click="openEditModal(item)"
-            style="background-color: #269900"
-          >
-            EDIT
-          </button>
+          <router-link to="/about">
+            <button
+              @click="openEditModal(item)"
+              style="background-color: #269900"
+            >
+              EDIT
+            </button>
+          </router-link>
+
           <button
             style="background-color: #ff6666"
             @click="delete_record(item.id)"
@@ -208,102 +212,5 @@ async function saveNewProduct(newProducts) {
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
-}
-.single-line-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* optional: adds "..." if text is too long */
-}
 
-.main_div {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-}
-.product_lists {
-  display: flex;
-  width: 100%;
-
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: left;
-  gap: 1rem;
-}
-.product_item {
-  width: 24%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-.image_class {
-  height: 300px;
-  object-fit: cover;
-}
-.item_details {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-
-  text-align: left;
-  font-size: 14px;
-}
-.button_div {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 2rem;
-}
-.heading {
-  display: flex;
-  justify-content: space-between;
-}
-.search_bar {
-  display: flex;
-  justify-content: flex-end;
-  margin: 2rem 0;
-}
-
-.modal_overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.modal_content {
-  display: flex;
-  flex-direction: column;
-
-  background-color: grey;
-
-  padding: 20px;
-  margin: 100px auto;
-  width: 600px;
-  border-radius: 10px;
-}
-.modal_content input {
-  height: 40px;
-  margin-top: 1rem;
-}
-
-.modal_content div {
-  display: flex;
-  justify-content: space-around;
-}
-
-@media (max-width: 600px) {
-  .product_item {
-    display: flex;
-    width: 100%;
-  }
-}
-@media (min-width: 601px) and (max-width: 1020px) {
-  .product_item {
-    display: flex;
-    width: 45%;
-  }
-}
 </style>

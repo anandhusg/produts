@@ -1,9 +1,13 @@
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import HelloWorld from "./components/Home.vue";
+import './assets/style.css'
+
 </script>
 
 <template>
-  <HelloWorld />
+  <!-- <HelloWorld /> -->
+  <router-view>
+  </router-view>
 </template>
 
 <style scoped>
